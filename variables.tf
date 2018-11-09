@@ -27,9 +27,9 @@ variable "name" {
 }
 
 variable "public_subnets" {
-    description = "A list of subnet maps. Public subnets route table has a route to the vpc igw."
-    type = "list"
-    default = []
+  description = "A list of subnet maps. Public subnets route table has a route to the vpc igw."
+  type = "list"
+  default = []
 }
 
 variable "public_subnets_vgw_route_prop_enabled" {

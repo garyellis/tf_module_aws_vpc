@@ -41,9 +41,9 @@ resource "aws_eip" "natgw_eip" {
 }
 
 resource "aws_nat_gateway" "natgw" {
-	count         = "${local.nat_gateway_count}"
+  count         = "${local.nat_gateway_count}"
   allocation_id = "${element(aws_eip.natgw_eip.*.id, count.index)}"
-	subnet_id     = "${element(aws_subnet.public.*.id, count.index)}"
+  subnet_id     = "${element(aws_subnet.public.*.id, count.index)}"
   tags          = "${merge(var.tags, map("Name", format("%s-%s", var.name, substr(element(var.azs, count.index), -1, 1))))}"
 }
 
@@ -52,10 +52,10 @@ resource "aws_subnet" "public" {
   count             = "${length(var.public_subnets)}"
 
   vpc_id            = "${aws_vpc.vpc.id}"
-	availability_zone = "${element(var.azs, count.index)}"
-	cidr_block        = "${lookup(var.public_subnets[count.index], "cidr")}"
-	tags = "${
-     merge(var.tags, map("Name", format("%s-%s-%s", var.name, lookup(var.public_subnets[count.index], "name") , substr(element(var.azs, count.index), -1, 1))))
+  availability_zone = "${element(var.azs, count.index)}"
+  cidr_block        = "${lookup(var.public_subnets[count.index], "cidr")}"
+  tags = "${
+    merge(var.tags, map("Name", format("%s-%s-%s", var.name, lookup(var.public_subnets[count.index], "name") , substr(element(var.azs, count.index), -1, 1))))
 	}"
 }
 
@@ -66,7 +66,7 @@ resource "aws_subnet" "private" {
   availability_zone = "${element(var.azs, count.index)}"
   cidr_block        = "${lookup(var.private_subnets[count.index], "cidr")}"
   tags = "${
-     merge(var.tags, map("Name", format("%s-%s-%s", var.name, lookup(var.private_subnets[count.index], "name") , substr(element(var.azs, count.index), -1, 1))))
+    merge(var.tags, map("Name", format("%s-%s-%s", var.name, lookup(var.private_subnets[count.index], "name") , substr(element(var.azs, count.index), -1, 1))))
   }"
 }
 
@@ -112,15 +112,15 @@ resource "aws_route_table" "private" {
 
 resource "aws_route_table_association" "private" {
   count = "${length(var.private_subnets)}"
-	subnet_id = "${element(aws_subnet.private.*.id, count.index)}"
-	route_table_id = "${element(aws_route_table.private.*.id, count.index)}"
+  subnet_id = "${element(aws_subnet.private.*.id, count.index)}"
+  route_table_id = "${element(aws_route_table.private.*.id, count.index)}"
 }
 
 resource "aws_route" "private_natgw" {
 	count = "${var.enable_natgw ?  length(var.private_subnets) : 0}"
-	route_table_id         = "${element(aws_route_table.private.*.id, count.index)}"
-	destination_cidr_block = "0.0.0.0/0"
-	nat_gateway_id         = "${element(aws_nat_gateway.natgw.*.id, count.index)}"
+  route_table_id         = "${element(aws_route_table.private.*.id, count.index)}"
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = "${element(aws_nat_gateway.natgw.*.id, count.index)}"
 }
 
 resource "aws_route_table" "private_restricted" {
@@ -139,27 +139,27 @@ resource "aws_route_table_association" "private_restricted" {
 
 # conditionally create a vgw or attach an already existing vgw
 resource "aws_vpn_gateway"  "vgw" {
-	count                  = "${var.create_vgw ? 1 : 0}"
+  count                  = "${var.create_vgw ? 1 : 0}"
   vpc_id                 = "${aws_vpc.vpc.id}"
-	tags = "${merge(var.tags, map("Name", format("%s", var.name)))}"
+  tags = "${merge(var.tags, map("Name", format("%s", var.name)))}"
 }
 
 resource "aws_vpn_gateway_attachment" "vgw" {
-	count                  = "${var.vgw_id != "" ? 1 : 0}"
+  count                  = "${var.vgw_id != "" ? 1 : 0}"
   vpc_id                 = "${aws_vpc.vpc.id}"
-	vpn_gateway_id         = "${var.vgw_id}"
+  vpn_gateway_id         = "${var.vgw_id}"
 }
 
 # conditionally enable route propagation on route tables
 resource "aws_vpn_gateway_route_propagation" "public" {
-	count                  = "${var.public_subnets_vgw_route_prop_enabled && (var.create_vgw || var.vgw_id != "") ? 1 : 0}"
-	route_table_id         = "${element(aws_route_table.public.*.id, count.index)}"
-	vpn_gateway_id         = "${element(concat(aws_vpn_gateway.vgw.*.id, aws_vpn_gateway_attachment.vgw.*.vpn_gateway_id), count.index)}"
+  count                  = "${var.public_subnets_vgw_route_prop_enabled && (var.create_vgw || var.vgw_id != "") ? 1 : 0}"
+  route_table_id         = "${element(aws_route_table.public.*.id, count.index)}"
+  vpn_gateway_id         = "${element(concat(aws_vpn_gateway.vgw.*.id, aws_vpn_gateway_attachment.vgw.*.vpn_gateway_id), count.index)}"
 }
 
 resource "aws_vpn_gateway_route_propagation" "private" {
-	count                  = "${var.private_subnets_vgw_route_prop_enabled && (var.create_vgw || var.vgw_id != "") ? length(var.private_subnets) : 0}"
-	route_table_id         = "${element(aws_route_table.private.*.id, count.index)}"
+  count                  = "${var.private_subnets_vgw_route_prop_enabled && (var.create_vgw || var.vgw_id != "") ? length(var.private_subnets) : 0}"
+  route_table_id         = "${element(aws_route_table.private.*.id, count.index)}"
   vpn_gateway_id         = "${element(concat(aws_vpn_gateway.vgw.*.id, aws_vpn_gateway_attachment.vgw.*.vpn_gateway_id), count.index)}"
 }
 
