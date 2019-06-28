@@ -1,20 +1,40 @@
+variable "region" {}
+variable "my_vpc_cidr" {}
+variable "my_vpc_name" {}
+variable "my_vpc_private_subnet_cidrs" {
+  type = list(map(string))
+}
+variable "my_vpc_private_restricted_cidrs" {
+  type = list(map(string))
+}
+variable "my_vpc_public_subnet_cidrs" {
+  type = list(map(string))
+}
+
+variable "tags" {
+  type = map(string)
+}
+
 data "aws_availability_zones" "azs" {}
 
+locals {
+  azs = [data.aws_availability_zones.azs.names[0], data.aws_availability_zones.azs.names[1], data.aws_availability_zones.azs.names[2]]
+}
 module "my_vpc" {
   source = "../"
 
-  azs                                    = ["${data.aws_availability_zones.azs.names[0]}", "${data.aws_availability_zones.azs.names[1]}", "${data.aws_availability_zones.azs.names[2]}"]
-  create_vgw                             = "0"
-  enable_natgw                           = "1"
-  name                                   = "${var.my_vpc_name}"
-  private_subnets                        = ["${var.my_vpc_private_subnet_cidrs}"]
+  azs                                               = local.azs
+  create_vgw                                        = false
+  enable_natgw                                      = true
+  name                                              = var.my_vpc_name
+  private_subnets                                   = var.my_vpc_private_subnet_cidrs
 
-  private_subnets_vgw_route_prop_enabled = "0"
-  private_restricted_subnets_vgw_route_prop_enabled = "0"
-  private_restricted_subnets             = ["${var.my_vpc_private_restricted_cidrs}"]
-  public_subnets = ["${var.my_vpc_public_subnet_cidrs}"]
-  public_subnets_vgw_route_prop_enabled  = "0"
-  tags                                   = "${var.tags}"
-  vgw_id                                 = ""
-  vpc_cidr                               = "${var.my_vpc_cidr}"
+  private_subnets_vgw_route_prop_enabled            = true
+  private_restricted_subnets_vgw_route_prop_enabled = true
+  private_restricted_subnets                        = var.my_vpc_private_restricted_cidrs
+  public_subnets                                    = var.my_vpc_public_subnet_cidrs
+  public_subnets_vgw_route_prop_enabled             = false
+  tags                                              = var.tags
+  vgw_id                                            = ""
+  vpc_cidr                                          = var.my_vpc_cidr
 }

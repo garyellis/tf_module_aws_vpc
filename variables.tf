@@ -1,79 +1,80 @@
 variable "azs" {
   description = "A list of availability zone names."
-  type = "list"
+  type = list(string)
 }
 
 variable "dhcp_options_domain_name" {
   description = "Set a dhcp option set domain name. This value should be an empty string when not used."
-  type        = "string"
+  type        = string
   default     = ""
 }
 
 variable "create_vgw" {
-  description = "Create a vgw associated to the vpc. Valid values are 0 and 1"
-  type        = "string"
-  default     = "0"
+  description = "Create a vgw associated to the vpc?"
+  type        = bool
+  default     = false
 }
 
 variable "enable_natgw" {
   description = "Create nat gateways. Valid values are 0 and 1."
-  type        = "string"
-  default     = "0"
+  type        = bool
+  default     = false
 }
 
 variable "name" {
   description = "the vpc name"
-  type        = "string"
+  type        = string
 }
 
 variable "public_subnets" {
-  description = "A list of subnet maps. Public subnets route table has a route to the vpc igw."
-  type = "list"
-  default = []
+  description = "A list of subnet maps. Public subnets have a route to the route vpc igw."
+  type        = list(map(string))
+  default     = []
 }
 
 variable "public_subnets_vgw_route_prop_enabled" {
-  description = "Enable route propagation on public subnets. Valid values are 0 and 1."
-  type        = "string"
-  default      = "0"
+  description = "Enable route propagation on public subnets."
+  type        = bool
+  default     = false
 }
 
 variable "private_subnets" {
-  description = "A list of subnet maps. Private subnet route tables have a round to natgw when applicable."
-  type        = "list"
+  description = "A list of subnet maps. Private subnet route tables have a rounte to a nat gateway."
+  type        = list(map(string))
   default     = []
 }
 
 variable "private_subnets_vgw_route_prop_enabled" {
-  description = "Enable route propagation on private subnets. Valid values are 0 and 1."
-  type        = "string"
-  default     = "0"
+  description = "Enable route propagation on private subnets."
+  type        = bool
+  default     = false
 }
 
 variable "private_restricted_subnets" {
-  description = "A list of subnet maps. Private restricted subnets do not have access to natgw."
-  type        = "list"
+  description = "A list of subnet maps. Private restricted subnets do not have routes to to an igw or nat"
+  type        = list(map(string))
   default     = []
 }
 
 variable "private_restricted_subnets_vgw_route_prop_enabled" {
-  description = "Enable route propagation on private restricted subnets. Valid values are 0 and 1."
-  type        = "string"
-  default     = "0"
+  description = "Enable route propagation on private restricted subnets."
+  type        = bool
+  default     = false
 }
 
 variable "vpc_cidr" {
-  description = "The vpc cidr block."
-  type        = "string"
+  description = "The vpc CIDR block."
+  type        = string
 }
 
 variable "tags" {
-  description = "Apply a map of tags to all taggable resources." 
-  type        = "map"
+  description = "A map of tags to create on all taggable resources." 
+  type        = map(string)
+  default     = {}
 }
 
 variable "vgw_id" {
-  description = "Associate an existing vgw to the vpc. The value should be a vgw id or an empty string."
-  type        = "string"
+  description = "Associate the vpc to an existing vgw."
+  type        = string
   default     = ""
 }

@@ -1,4 +1,4 @@
-my_vpc_name = "my_vpc"
+my_vpc_name = "tfmod-aws-vpc"
 # http://jodies.de/ipcalc?host=10.240.0.0&mask1=22&mask2=26
 my_vpc_cidr = "10.240.0.0/22"
 my_vpc_private_subnet_cidrs = [
@@ -22,8 +22,6 @@ region = "us-west-2"
 
 
 tags = {
-  environment_name = "my-sandbox"
+  environment_name = "tfmod-aws-vpc"
   environment_stage = "dev"
-  owner = "me"
-  project = "my-project"
 }
