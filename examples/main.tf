@@ -27,7 +27,7 @@ module "my_vpc" {
   create_vgw                                        = false
   enable_natgw                                      = true
   name                                              = var.my_vpc_name
-  private_subnets                                   = var.my_vpc_private_subnet_cidrs
+  private_subnets                                   = [] #var.my_vpc_private_subnet_cidrs
 
   private_subnets_vgw_route_prop_enabled            = true
   private_restricted_subnets_vgw_route_prop_enabled = true
@@ -37,4 +37,8 @@ module "my_vpc" {
   tags                                              = var.tags
   vgw_id                                            = ""
   vpc_cidr                                          = var.my_vpc_cidr
+}
+
+output "my_vpc_public_subnets" {
+  value = module.my_vpc.public_subnets
 }
