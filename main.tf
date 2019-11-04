@@ -164,3 +164,78 @@ resource "aws_vpn_gateway_route_propagation" "private_restricted" {
   route_table_id = element(aws_route_table.private_restricted.*.id, count.index)
   vpn_gateway_id = element(concat(aws_vpn_gateway.vgw.*.id, aws_vpn_gateway_attachment.vgw.*.vpn_gateway_id), count.index)
 }
+
+#### vpc gateway endpoints
+
+#### s3 vpc endpoint
+data "aws_vpc_endpoint_service" "s3" {
+  count = var.enable_s3_vpc_endpoint ? 1 : 0
+
+  service = "s3"
+}
+
+resource "aws_vpc_endpoint" "s3" {
+  count = var.enable_s3_vpc_endpoint ? 1 : 0
+
+  vpc_id       = aws_vpc.vpc.id
+  service_name = data.aws_vpc_endpoint_service.s3[0].service_name
+  tags         = merge(var.tags, map("Name", format("%s-s3", var.name)))
+}
+
+resource "aws_vpc_endpoint_route_table_association" "public_s3" {
+  count = var.enable_s3_vpc_endpoint && length(var.public_subnets) > 0 ? 1 : 0
+
+  vpc_endpoint_id = aws_vpc_endpoint.s3[0].id
+  route_table_id  = element(aws_route_table.public.*.id, count.index)
+}
+
+resource "aws_vpc_endpoint_route_table_association" "private_s3" {
+  count = var.enable_s3_vpc_endpoint ? length(var.private_subnets) : 0
+
+  vpc_endpoint_id = aws_vpc_endpoint.s3[0].id
+  route_table_id  = element(aws_route_table.private.*.id, count.index)
+}
+
+resource "aws_vpc_endpoint_route_table_association" "private_restricted_s3" {
+  count = var.enable_s3_vpc_endpoint ? length(var.private_restricted_subnets) : 0
+
+  vpc_endpoint_id = aws_vpc_endpoint.s3[0].id
+  route_table_id  = element(aws_route_table.private_restricted.*.id, count.index)
+}
+
+
+#### dynamodb vpc endpoint
+data "aws_vpc_endpoint_service" "dynamodb" {
+  count = var.enable_dynamodb_vpc_endpoint ? 1 : 0
+
+  service = "dynamodb"
+}
+
+resource "aws_vpc_endpoint" "dynamodb" {
+  count = var.enable_dynamodb_vpc_endpoint ? 1 : 0
+
+  vpc_id       = aws_vpc.vpc.id
+  service_name = data.aws_vpc_endpoint_service.dynamodb[0].service_name
+  tags         = merge(var.tags, map("Name", format("%s-dynamodb", var.name)))
+}
+
+resource "aws_vpc_endpoint_route_table_association" "public_dynamodb" {
+  count = var.enable_dynamodb_vpc_endpoint && length(var.public_subnets) > 0 ? 1 : 0
+
+  vpc_endpoint_id = aws_vpc_endpoint.dynamodb[0].id
+  route_table_id  = element(aws_route_table.public.*.id, count.index)
+}
+
+resource "aws_vpc_endpoint_route_table_association" "private_dynamodb" {
+  count = var.enable_dynamodb_vpc_endpoint ? length(var.private_subnets) : 0
+
+  vpc_endpoint_id = aws_vpc_endpoint.dynamodb[0].id
+  route_table_id  = element(aws_route_table.private.*.id, count.index)
+}
+
+resource "aws_vpc_endpoint_route_table_association" "private_restricted_dynamodb" {
+  count = var.enable_dynamodb_vpc_endpoint ? length(var.private_restricted_subnets) : 0
+
+  vpc_endpoint_id = aws_vpc_endpoint.dynamodb[0].id
+  route_table_id  = element(aws_route_table.private_restricted.*.id, count.index)
+}

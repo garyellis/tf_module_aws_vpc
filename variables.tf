@@ -78,3 +78,17 @@ variable "vgw_id" {
   type        = string
   default     = ""
 }
+
+
+#### vpc gateway endpoints
+variable "enable_s3_vpc_endpoint" {
+  description = "Enable s3 vpc endpoint."
+  type        = bool
+  default     = false
+}
+
+variable "enable_dynamodb_vpc_endpoint" {
+  description = "Enable dynamodb vpc endpoint."
+  type        = bool
+  default     = false
+}
