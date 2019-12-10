@@ -239,3 +239,11 @@ resource "aws_vpc_endpoint_route_table_association" "private_restricted_dynamodb
   vpc_endpoint_id = aws_vpc_endpoint.dynamodb[0].id
   route_table_id  = element(aws_route_table.private_restricted.*.id, count.index)
 }
+
+#### other config
+resource "aws_default_security_group" "default" {
+  count = var.delete_default_sg_rules ? 1 : 0
+
+  vpc_id = aws_vpc.vpc.id
+  tags = merge(map("Name", "Default"), map("comments", "Do not use"), var.tags)
+}

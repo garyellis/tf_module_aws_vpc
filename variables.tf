@@ -92,3 +92,10 @@ variable "enable_dynamodb_vpc_endpoint" {
   type        = bool
   default     = false
 }
+
+#### other
+variable "delete_default_sg_rules" {
+  description = "wipe the default security group rules."
+  type        = bool
+  default     = true
+}
