@@ -40,9 +40,9 @@ output "private_restricted_subnets" {
 }
 
 output "s3_vpc_endpoint_id" {
-  value = concat(aws_vpc_endpoint.s3.*.id)
+  value = join("", aws_vpc_endpoint.s3.*.id)
 }
 
 output "dynamodb_vpc_endpoint_id" {
-  value = concat(aws_vpc_endpoint.dynamodb.*.id)
+  value = join("", aws_vpc_endpoint.dynamodb.*.id)
 }
