@@ -38,9 +38,17 @@ module "my_vpc" {
   vgw_id                                            = ""
   vpc_cidr                                          = var.my_vpc_cidr
   enable_s3_vpc_endpoint                            = true
-  enable_dynamodb_vpc_endpoint                      = true
+  enable_dynamodb_vpc_endpoint                      = false
 }
 
 output "my_vpc_public_subnets" {
   value = module.my_vpc.public_subnets
+}
+
+output "s3_vpc_endpoint_id" {
+  value = module.my_vpc.s3_vpc_endpoint_id
+}
+
+output "dynamodb_vpc_endpoint_id" {
+  value = module.my_vpc.dynamodb_vpc_endpoint_id
 }

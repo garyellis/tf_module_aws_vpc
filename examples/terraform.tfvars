@@ -25,3 +25,7 @@ tags = {
   environment_name = "tfmod-aws-vpc"
   environment_stage = "dev"
 }
+
+# vpc endpoints
+
+enable_all_vpc_endpoints = true
