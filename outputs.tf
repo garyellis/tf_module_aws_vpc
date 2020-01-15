@@ -43,6 +43,14 @@ output "s3_vpc_endpoint_id" {
   value = join("", aws_vpc_endpoint.s3.*.id)
 }
 
+output "s3_vpc_endpoint_prefix_list_id" {
+  value = join("", aws_vpc_endpoint.s3.*.prefix_list_id)
+}
+
 output "dynamodb_vpc_endpoint_id" {
   value = join("", aws_vpc_endpoint.dynamodb.*.id)
+}
+
+output "dynamodb_vpc_endpoint_prefix_list_id" {
+  value = join("", aws_vpc_endpoint.s3.*.prefix_list_id)
 }
