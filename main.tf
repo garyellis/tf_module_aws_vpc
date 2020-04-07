@@ -48,7 +48,7 @@ resource "aws_subnet" "public" {
   cidr_block        = lookup(var.public_subnets[count.index], "cidr")
   tags = merge(var.tags, {
     "Name"             = format("%s-%s-%s", var.name, lookup(var.public_subnets[count.index], "name"), substr(element(var.azs, count.index), -1, 1))
-    "ews:network-type" = lookup(var.public_subnets[count.index], "name")
+    "network-type" = lookup(var.public_subnets[count.index], "name")
   })
 }
 
@@ -60,7 +60,7 @@ resource "aws_subnet" "private" {
   cidr_block        = lookup(var.private_subnets[count.index], "cidr")
   tags = merge(var.tags, {
     "Name"             = format("%s-%s-%s", var.name, lookup(var.private_subnets[count.index], "name"), substr(element(var.azs, count.index), -1, 1))
-    "ews:network-type" = lookup(var.private_subnets[count.index], "name")
+    "network-type" = lookup(var.private_subnets[count.index], "name")
   })
 }
 
@@ -72,7 +72,7 @@ resource "aws_subnet" "private_restricted" {
   cidr_block        = lookup(var.private_restricted_subnets[count.index], "cidr")
   tags = merge(var.tags, {
     "Name"             = format("%s-%s-%s", var.name, lookup(var.private_restricted_subnets[count.index], "name"), substr(element(var.azs, count.index), -1, 1))
-    "ews:network-type" = lookup(var.private_restricted_subnets[count.index], "name")
+    "network-type" = lookup(var.private_restricted_subnets[count.index], "name")
   })
 }
 
