@@ -8,8 +8,8 @@ output "vpc_cidr" {
 
 output "public_subnet_ids" {
   value = [
-    for i in compact(aws_subnet.public.*.id):
-      i
+    for i in compact(aws_subnet.public.*.id) :
+    i
   ]
 }
 
@@ -19,8 +19,8 @@ output "public_subnets" {
 
 output "private_subnet_ids" {
   value = [
-    for i in compact(aws_subnet.private.*.id):
-      i
+    for i in compact(aws_subnet.private.*.id) :
+    i
   ]
 }
 
@@ -30,8 +30,8 @@ output "private_subnets" {
 
 output "private_restricted_subnet_ids" {
   value = [
-    for i in compact(aws_subnet.private_restricted.*.id):
-      i
+    for i in compact(aws_subnet.private_restricted.*.id) :
+    i
   ]
 }
 
@@ -54,7 +54,7 @@ output "dynamodb_vpc_endpoint_id" {
 output "dynamodb_vpc_endpoint_prefix_list_id" {
   value = join("", aws_vpc_endpoint.dynamodb.*.prefix_list_id)
 }
-  
+
 output "vgw_id" {
   value = coalesce(join("", aws_vpn_gateway.vgw.*.id), var.vgw_id)
 }

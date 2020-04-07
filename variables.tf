@@ -1,6 +1,6 @@
 variable "azs" {
   description = "A list of availability zone names."
-  type = list(string)
+  type        = list(string)
 }
 
 variable "dhcp_options_domain_name" {
@@ -68,7 +68,7 @@ variable "vpc_cidr" {
 }
 
 variable "tags" {
-  description = "A map of tags to create on all taggable resources." 
+  description = "A map of tags to create on all taggable resources."
   type        = map(string)
   default     = {}
 }
